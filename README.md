@@ -97,7 +97,7 @@ seu-repositorio/                  ← raiz do repositório Git
 ## 3. Checklist Interativo
 
 - [ ] [Criar o diretório backend e iniciar o projeto (`npm init -y`)](#passo-1)
-- [ ] [Criar a estrutura básica de pastas](#passo-2)
+- [ ] [(Criar a estrutura básica de pastas)](#passo-2)
 - [ ] [Instalar as dependências de desenvolvimento](#passo-3)
 - [ ] [Instalar as dependências essenciais de produção](#passo-4)
 - [ ] [Criar `.gitignore` e `.env.example`](#passo-5)
