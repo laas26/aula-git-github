@@ -94,22 +94,32 @@ seu-repositorio/                  ← raiz do repositório Git
 
 ## 3. Checklist Interativo
 
-Copie esta lista para o seu board/PR e marque conforme avança (troque `[ ]` por `[x]`):
+## 3. Checklist Interativo
 
-- [ ] Criar o diretório `backend` e iniciar o projeto (`npm init -y`)
-- [ ] Criar a estrutura básica de pastas (`controllers`, `models`, `routes`, `middlewares`, `tests`, `data`)
-- [ ] Instalar as dependências de desenvolvimento
-- [ ] Instalar as dependências essenciais de produção
-- [ ] Criar `.gitignore` e `.env.example` documentando as variáveis obrigatórias
-- [ ] Criar `tsconfig.json` com `strict: true` e `esModuleInterop: true`
-- [ ] Remover o header `x-powered-by`
-- [ ] Configurar o Helmet e os cabeçalhos seguros no Express
-- [ ] Criar o `Dockerfile` (Node Alpine, non-root, porta 3000)
-- [ ] Criar o `.dockerignore` no contexto de build
-- [ ] Criar/atualizar o `docker-compose.yml` na raiz, interligando backend + frontend
-- [ ] Testar localmente se `docker compose up --build` sobe os dois ambientes com sucesso
-- [ ] Criar o `README.md` do backend com apresentação do projeto e como rodar
+- [ ] [Criar o diretório backend e iniciar o projeto (`npm init -y`)](#passo-1)
+- [ ] [Criar a estrutura básica de pastas](#passo-2)
+- [ ] [Instalar as dependências de desenvolvimento](#passo-3)
+- [ ] [Instalar as dependências essenciais de produção](#passo-4)
+- [ ] [Criar `.gitignore` e `.env.example`](#passo-5)
+- [ ] [Criar `tsconfig.json` com configuração estrita e saída para build](#passo-6)
+- [ ] [Remover o header `x-powered-by`](#passo-7)
+- [ ] [Configurar o Helmet](#passo-8)
+- [ ] [Criar o `Dockerfile`](#passo-9)
+- [ ] [Criar o `.dockerignore`](#passo-10)
+- [ ] [Criar/atualizar o `docker-compose.yml`](#passo-11)
+- [ ] [Testar se o ambiente sobe com Docker Compose](#passo-12)
+- [ ] [Criar o `README.md` do backend](#passo-13)
 
+---
+
+## 4. Passo a Passo do Setup
+
+<a id="passo-1"></a>
+### ✅ Passo 1 - Criar o diretório e iniciar o projeto
+
+**Comando (bash):**
+```bash
+mkdir backend && cd backend && npm init -y
 ---
 
 ## 4. Passo a Passo do Setup
