@@ -4,7 +4,7 @@
 
 > Setup de backend Node.js + JavaScript com Docker: pastas, dependências, segurança e containers - passo a passo, do zero.
 
-Este documento é o guia de onboarding e a fonte de verdade para configurar o ambiente de back-end do **TechStore**. Cada passo tem: **comando exato**, **arquivo/pasta afetado**, **resultado esperado** e o **porquê**.
+Este documento é o guia de onboarding para configurar o ambiente de back-end da **TechStore**. Cada passo tem: **comando exato**, **arquivo/pasta afetado**, **resultado esperado** e o **porquê**.
 
 > 🖥️ **Nota:** todos os comandos deste documento usam sintaxe **bash**. Funciona direto no Linux, macOS e WSL. No Windows "puro", use o **Git Bash** (não o PowerShell/CMD, onde alguns comandos como `mkdir -p` e `touch` não existem do mesmo jeito).
 
