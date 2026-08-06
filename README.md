@@ -1,13 +1,10 @@
-# Setup e Padrões do Ambiente Backend (Node.js + TypeScript)
+# Setup e Padrões do Ambiente Backend (Node.js + JavaScript)
 
 ## 📌 TL;DR
 
-> Setup de backend Node.js + TypeScript com Docker: pastas, dependências, segurança e containers - passo a passo, do zero.
+> Setup de backend Node.js + JavaScript com Docker: pastas, dependências, segurança e containers - passo a passo, do zero.
 
 Este documento é o guia de onboarding e a fonte de verdade para configurar o ambiente de back-end do **TechStore**. Cada passo tem: **comando exato**, **arquivo/pasta afetado**, **resultado esperado** e o **porquê**.
-
-Reflete o item do board **"Configuração do ambiente Node.js com TypeScript"** (Sprint Atual) - cada seção corresponde a um checkbox de lá.
-🔗 [Ver Board do Projeto](https://seu-link-do-board-aqui)
 
 > 🖥️ **Nota:** todos os comandos deste documento usam sintaxe **bash**. Funciona direto no Linux, macOS e WSL. No Windows "puro", use o **Git Bash** (não o PowerShell/CMD, onde alguns comandos como `mkdir -p` e `touch` não existem do mesmo jeito).
 
@@ -17,25 +14,24 @@ Reflete o item do board **"Configuração do ambiente Node.js com TypeScript"** 
 
 1. [Pré-Requisitos](#1-pré-requisitos)
 2. [Visão Geral da Estrutura Final](#2-visão-geral-da-estrutura-final)
-3. [Checklist Interativo](#3-checklist-interativo)
-4. [Passo a Passo do Setup](#4-passo-a-passo-do-setup)
+3. [Passo a Passo do Setup](#3-passo-a-passo-do-setup)
    - [✅ Passo 1 - Criar o diretório e iniciar o projeto](#-passo-1---criar-o-diretório-e-iniciar-o-projeto)
    - [✅ Passo 2 - Criar a estrutura básica de pastas](#-passo-2---criar-a-estrutura-básica-de-pastas)
    - [✅ Passo 3 - Instalar as dependências de desenvolvimento](#-passo-3---instalar-as-dependências-de-desenvolvimento)
    - [✅ Passo 4 - Instalar as dependências essenciais de produção](#-passo-4---instalar-as-dependências-essenciais-de-produção)
    - [✅ Passo 5 - Criar `.gitignore` e `.env.example`](#-passo-5---criar-gitignore-e-envexample)
-   - [✅ Passo 6 - Criar `tsconfig.json` com configuração estrita](#-passo-6---criar-tsconfigjson-com-configuração-estrita)
-   - [✅ Passo 7 - Remover o header `x-powered-by`](#-passo-7---remover-o-header-x-powered-by)
-   - [✅ Passo 8 - Configurar o Helmet](#-passo-8---configurar-o-helmet)
-   - [✅ Passo 9 - Criar o `Dockerfile`](#-passo-9---criar-o-dockerfile)
-   - [✅ Passo 10 - Criar o `.dockerignore`](#-passo-10---criar-o-dockerignore)
-   - [✅ Passo 11 - Criar/atualizar o `docker-compose.yml` na raiz do repositório](#-passo-11---criaratualizar-o-docker-composeyml-na-raiz-do-repositório)
-   - [✅ Passo 12 - Testar se o ambiente sobe com Docker Compose](#-passo-12---testar-se-o-ambiente-sobe-com-docker-compose)
-   - [✅ Passo 13 - Criar o `README.md` do backend](#-passo-13---criar-o-readmemd-do-backend)
-5. [Padrões de Código (ESLint, Prettier, Husky)](#5-padrões-de-código-eslint-prettier-husky)
-6. [Comandos Úteis (resumo)](#6-comandos-úteis-resumo)
-7. [Padrões de Commit e Branch](#7-padrões-de-commit-e-branch)
-8. [Observabilidade](#8-observabilidade)
+   - [✅ Passo 6 - Remover o header `x-powered-by`](#-passo-6---remover-o-header-x-powered-by)
+   - [✅ Passo 7 - Configurar o Helmet e a rota `/health`](#-passo-7---configurar-o-helmet-e-a-rota-health)
+   - [✅ Passo 8 - Criar o `Dockerfile`](#-passo-8---criar-o-dockerfile)
+   - [✅ Passo 9 - Criar o `.dockerignore`](#-passo-9---criar-o-dockerignore)
+   - [✅ Passo 10 - Criar/atualizar o `docker-compose.yml` na raiz do repositório](#-passo-10---criaratualizar-o-docker-composeyml-na-raiz-do-repositório)
+   - [✅ Passo 11 - Testar se o ambiente sobe com Docker Compose](#-passo-11---testar-se-o-ambiente-sobe-com-docker-compose)
+   - [✅ Passo 12 - Criar o `README.md` do backend](#-passo-12---criar-o-readmemd-do-backend)
+4. [Padrões de Código (ESLint, Prettier, Husky)](#4-padrões-de-código-eslint-prettier-husky)
+5. [Comandos Úteis (resumo)](#5-comandos-úteis-resumo)
+6. [Padrões de Commit e Branch](#6-padrões-de-commit-e-branch)
+7. [Observabilidade](#7-observabilidade)
+8. [Troubleshooting (Erros Comuns)](#8-troubleshooting-erros-comuns)
 9. [Referências Técnicas](#9-referências-técnicas)
 10. [Dúvidas e Evoluções](#10-dúvidas-e-evoluções)
 
@@ -43,7 +39,7 @@ Reflete o item do board **"Configuração do ambiente Node.js com TypeScript"** 
 
 ## 1. Pré-Requisitos
 
-Antes de começar, confirme no terminal que você tem tudo instalado:
+Antes de começar, confirme no terminal que todos os itens abaixo estão instalados:
 
 ```bash
 node -v    # precisa ser >= v20.x
@@ -52,17 +48,17 @@ docker -v  # opcional, mas recomendado
 docker compose version  # opcional
 ```
 
-Se algum comando não existir, instale antes de continuar:
+Se algum comando não existir, instalar antes de continuar:
 - Node.js: https://nodejs.org/en/download (a instalação já vem com npm)
 - Docker Desktop: https://docs.docker.com/get-docker/ (já vem com Docker Compose)
 
-> 💡 Se você usa múltiplos projetos Node com versões diferentes, considere usar `nvm` (Node Version Manager) para trocar de versão facilmente.
+> 💡 Para múltiplos projetos Node com versões diferentes, considere usar `nvm` (Node Version Manager) para trocar de versão facilmente.
 
 ---
 
 ## 2. Visão Geral da Estrutura Final
 
-Depois de seguir todos os passos, seu projeto deve ficar assim:
+Depois de seguir todos os passos, o projeto deve ficar assim:
 
 ```
 seu-repositorio/                  ← raiz do repositório Git
@@ -73,7 +69,7 @@ seu-repositorio/                  ← raiz do repositório Git
 │   │   ├── models/
 │   │   ├── routes/
 │   │   ├── middlewares/
-│   │   └── index.ts              ← ponto de entrada da aplicação
+│   │   └── index.js              ← ponto de entrada da aplicação
 │   ├── tests/
 │   ├── data/                     ← arquivos JSON de persistência (RN04 do PRD)
 │   ├── .env                      ← NUNCA vai pro Git (segredos reais)
@@ -82,47 +78,16 @@ seu-repositorio/                  ← raiz do repositório Git
 │   ├── .dockerignore             ← controla o que NÃO entra na imagem Docker
 │   ├── package.json
 │   ├── package-lock.json
-│   ├── tsconfig.json
 │   ├── Dockerfile
 │   └── README.md
 └── frontend/                     ← (fora do escopo deste documento)
 ```
 
-**Por quê:** `docker-compose.yml` fica na raiz porque ele orquestra *mais de um* serviço (backend, frontend, e futuramente banco/cache) - se ficasse dentro de `backend/`, ele só "enxergaria" o backend. Já o `.dockerignore` fica dentro de `backend/`, porque é lá que está o **contexto de build** do Docker (mais detalhes no Passo 10).
+**Por quê:** `docker-compose.yml` fica na raiz porque orquestra *mais de um* serviço (backend, frontend, e futuramente banco/cache) - se ficasse dentro de `backend/`, só "enxergaria" o backend. Já o `.dockerignore` fica dentro de `backend/`, porque é lá que está o **contexto de build** do Docker (mais detalhes no Passo 9).
 
 ---
 
-## 3. Checklist Interativo
-
-## 3. Checklist Interativo
-
-- [ ] [Criar o diretório backend e iniciar o projeto (`npm init -y`)](#passo-1)
-- [ ] [(Criar a estrutura básica de pastas)](#passo-2)
-- [ ] [Instalar as dependências de desenvolvimento](#passo-3)
-- [ ] [Instalar as dependências essenciais de produção](#passo-4)
-- [ ] [Criar `.gitignore` e `.env.example`](#passo-5)
-- [ ] [Criar `tsconfig.json` com configuração estrita e saída para build](#passo-6)
-- [ ] [Remover o header `x-powered-by`](#passo-7)
-- [ ] [Configurar o Helmet](#passo-8)
-- [ ] [Criar o `Dockerfile`](#passo-9)
-- [ ] [Criar o `.dockerignore`](#passo-10)
-- [ ] [Criar/atualizar o `docker-compose.yml`](#passo-11)
-- [ ] [Testar se o ambiente sobe com Docker Compose](#passo-12)
-- [ ] [Criar o `README.md` do backend](#passo-13)
-
----
-
-## 4. Passo a Passo do Setup
-
-<a id="passo-1"></a>
-### ✅ Passo 1 - Criar o diretório e iniciar o projeto
-
-**Comando (bash):**
-```bash
-mkdir backend && cd backend && npm init -y
----
-
-## 4. Passo a Passo do Setup
+## 3. Passo a Passo do Setup
 
 ### ✅ Passo 1 - Criar o diretório e iniciar o projeto
 
@@ -146,7 +111,7 @@ mkdir backend && cd backend && npm init -y
 }
 ```
 
-⚠️ **Atenção:** a partir daqui, todo comando do restante deste documento assume que você está **dentro da pasta `backend/`**, a não ser que eu diga o contrário (ex: os comandos do `docker-compose.yml`, que rodam na raiz do repositório).
+⚠️ **Atenção:** a partir daqui, todo comando do restante deste documento assume execução **dentro da pasta `backend/`**, salvo indicação contrária (ex: os comandos do `docker-compose.yml`, que rodam na raiz do repositório).
 
 ---
 
@@ -155,7 +120,7 @@ mkdir backend && cd backend && npm init -y
 **Comando (bash, rodando de dentro de `backend/`):**
 ```bash
 mkdir -p src/controllers src/models src/routes src/middlewares tests data
-touch src/index.ts
+touch src/index.js
 ```
 
 **Para que serve cada pasta:**
@@ -168,7 +133,7 @@ touch src/index.ts
 | `tests` | Testes automatizados (Jest) |
 | `data` | Arquivos JSON de persistência do MVP (ex: `database.json`, `products.json` - conforme RN04) |
 
-**Resultado esperado:** rodando `ls -R` dentro de `backend/`, você vê todas as pastas acima, e `src/index.ts` existe (vazio por enquanto).
+**Resultado esperado:** rodando `ls -R` dentro de `backend/`, todas as pastas acima aparecem, e `src/index.js` existe (vazio por enquanto).
 
 ---
 
@@ -176,17 +141,14 @@ touch src/index.ts
 
 **Comando (bash):**
 ```bash
-npm install --save-dev typescript @types/node @types/express ts-node-dev jest ts-jest @types/jest supertest eslint prettier
+npm install --save-dev nodemon jest supertest eslint prettier
 ```
 
 **O que é cada pacote:**
 | Pacote | Para que serve |
 |---|---|
-| `typescript` | O compilador TS em si |
-| `@types/node` | Tipagem das APIs do Node (fs, path, etc.) |
-| `@types/express` | Tipagem do Express |
-| `ts-node-dev` | Roda o TypeScript direto (sem precisar compilar toda hora) e reinicia sozinho quando você salva um arquivo |
-| `jest` + `ts-jest` + `@types/jest` | Framework de testes automatizados com suporte a TypeScript |
+| `nodemon` | Reinicia o servidor automaticamente sempre que um arquivo é salvo, sem precisar parar e rodar `node` de novo manualmente |
+| `jest` | Framework de testes automatizados |
 | `supertest` | Testar rotas HTTP (ex: simular um `POST /login`) sem precisar subir o servidor de verdade |
 | `eslint` + `prettier` | Padronização e formatação de código |
 
@@ -198,7 +160,7 @@ npm install --save-dev typescript @types/node @types/express ts-node-dev jest ts
 
 **Comando (bash):**
 ```bash
-npm install express jsonwebtoken bcrypt dotenv helmet
+npm install express jsonwebtoken bcrypt dotenv helmet express-rate-limit
 ```
 
 **O que é cada pacote (e onde ele conecta com o PRD):**
@@ -209,10 +171,11 @@ npm install express jsonwebtoken bcrypt dotenv helmet
 | `bcrypt` | Fazer hash de senha | RN02 - senha **nunca** em texto plano |
 | `dotenv` | Ler variáveis do arquivo `.env` no código | Segredos fora do código (Passo 5) |
 | `helmet` | Configurar cabeçalhos HTTP seguros automaticamente | RNF02 - segurança da aplicação |
+| `express-rate-limit` | Limitar número de requisições por IP/janela de tempo | RF02/RF03, RNF02 - rate limiting em login e recuperação de senha |
 
-**Resultado esperado:** essas dependências aparecem em `package.json`, dentro de `"dependencies"` (não `devDependencies` - elas são necessárias em produção, não só em desenvolvimento).
+**Resultado esperado:** essas dependências aparecem em `package.json`, dentro de `"dependencies"` (não `devDependencies` - são necessárias em produção, não só em desenvolvimento).
 
-> 📌 **Nota para mais adiante:** o PRD (RF02/RF03, RNF02) também pede *rate limiting* em login e recuperação de senha. Isso normalmente é feito com o pacote `express-rate-limit`, mas como ele é usado dentro de um middleware específico (não faz parte do "esqueleto" do ambiente), a instalação dele fica para quando a rota de login/recuperação for implementada - não é um passo deste setup inicial.
+> 📌 **Nota:** a instalação do `express-rate-limit` faz parte do esqueleto do ambiente. A aplicação do middleware (ex: `app.use('/login', rateLimiter)`) fica para quando as rotas de login e recuperação de senha forem implementadas, já que depende da lógica específica de cada rota.
 
 ---
 
@@ -226,9 +189,9 @@ touch .gitignore .env .env.example
 **Conteúdo do `backend/.gitignore`:**
 ```
 node_modules/
-dist/
 .env
 *.log
+coverage/
 ```
 
 **Conteúdo do `backend/.env.example`** (vai para o Git - é só o *modelo*, sem valores reais):
@@ -247,109 +210,100 @@ DB_URL=./data/database.json
 
 **Por quê:**
 - `.env` fica de fora do Git (`.gitignore`) para que segredos (senhas, chaves JWT) nunca sejam versionados nem apareçam no histórico do repositório.
-- `.env.example` **fica** no Git - ele documenta *quais* variáveis existem, sem revelar os valores, para que qualquer pessoa do time saiba o que precisa configurar ao clonar o projeto.
-- 🚨 Nunca escreva uma chave secreta ou senha padrão diretamente no código (hardcoded), nem mesmo "só para teste" ou como valor de fallback - é um dos erros de segurança mais comuns.
+- `.env.example` **fica** no Git - documenta *quais* variáveis existem, sem revelar os valores, para que qualquer pessoa do time saiba o que precisa configurar ao clonar o projeto.
+- 🚨 Nunca escrever uma chave secreta ou senha padrão diretamente no código (hardcoded), nem mesmo "só para teste" ou como valor de fallback - é um dos erros de segurança mais comuns.
 
 **Resultado esperado:** ao rodar `git status`, o arquivo `.env` **não aparece** como arquivo a ser commitado, mas `.env.example` e `.gitignore` aparecem.
 
 ---
 
-### ✅ Passo 6 - Criar `tsconfig.json` com configuração estrita
+### ✅ Passo 6 - Remover o header `x-powered-by`
 
-**Comando (bash):**
-```bash
-npx tsc --init
-```
+**Onde:** `src/index.js` (ponto de entrada da aplicação)
 
-Isso gera um `tsconfig.json` grande, cheio de opções comentadas. Abra o arquivo e garanta que estas duas opções estejam **ativas** (sem `//` na frente):
+```javascript
+require('dotenv').config()
 
-```json
-{
-  "compilerOptions": {
-    "strict": true,
-    "esModuleInterop": true
-  }
-}
-```
-
-**Por quê:**
-- `"strict": true` → liga um conjunto de verificações (como proibir `any` implícito, checar `null`/`undefined`) que pegam erros de tipagem **em tempo de compilação**, antes de virarem bug em produção.
-- `"esModuleInterop": true` → permite escrever `import express from 'express'` normalmente, mesmo quando a biblioteca foi escrita no padrão antigo do Node (CommonJS/`module.exports`). Sem isso, alguns imports quebram ou exigem uma sintaxe estranha.
-
-**Resultado esperado:** rodando `npx tsc --noEmit` (só checa tipos, sem gerar arquivo), nenhum erro aparece (mesmo com o projeto quase vazio).
-
----
-
-### ✅ Passo 7 - Remover o header `x-powered-by`
-
-**Onde:** `src/index.ts` (ou o arquivo onde você cria a instância do Express)
-
-```typescript
-import express from 'express'
+const express = require('express')
 
 const app = express()
 app.disable('x-powered-by')
 ```
 
-**Por quê:** por padrão, o Express envia um header HTTP `X-Powered-By: Express` em toda resposta. Isso entrega de graça, para qualquer atacante, qual framework/stack você usa - informação que facilita a busca por vulnerabilidades conhecidas daquele framework. `app.disable('x-powered-by')` remove esse header.
+**Por quê:**
+- `require('dotenv').config()` carrega as variáveis do `.env` para `process.env` - precisa ser a primeira coisa executada no arquivo, antes de qualquer código que dependa dessas variáveis.
+- Por padrão, o Express envia um header HTTP `X-Powered-By: Express` em toda resposta. Isso entrega de graça, para qualquer atacante, qual framework/stack está em uso - informação que facilita a busca por vulnerabilidades conhecidas daquele framework. `app.disable('x-powered-by')` remove esse header.
 
 **Resultado esperado:** depois de subir o servidor, uma requisição de teste (`curl -I http://localhost:3000`) **não** mostra o header `X-Powered-By` na resposta.
 
 ---
 
-### ✅ Passo 8 - Configurar o Helmet
+### ✅ Passo 7 - Configurar o Helmet e a rota `/health`
 
-**Onde:** mesmo arquivo `src/index.ts`, logo depois do Passo 7
+**Onde:** mesmo arquivo `src/index.js`, logo depois do Passo 6
 
-```typescript
-import helmet from 'helmet'
+```javascript
+const helmet = require('helmet')
 
 app.use(helmet())
+
+app.get('/health', (_req, res) => {
+  res.status(200).json({ status: 'ok' })
+})
+
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Servidor rodando na porta ${process.env.PORT || 3000}`)
+})
 ```
 
-**Por quê:** o `helmet()` configura de uma vez só um conjunto de cabeçalhos HTTP de segurança recomendados (ex: `Content-Security-Policy`, `X-Frame-Options`, `Strict-Transport-Security`), reduzindo a superfície de ataque contra vulnerabilidades comuns como clickjacking e MIME sniffing. É basicamente "boas práticas de segurança de header" empacotadas em uma linha, em vez de você configurar cada header manualmente.
+**Por quê:**
+- `helmet()` configura de uma vez só um conjunto de cabeçalhos HTTP de segurança recomendados (ex: `Content-Security-Policy`, `X-Frame-Options`, `Strict-Transport-Security`), reduzindo a superfície de ataque contra vulnerabilidades comuns como clickjacking e MIME sniffing. É basicamente "boas práticas de segurança de header" empacotadas em uma linha, em vez de configurar cada header manualmente.
+- A rota `GET /health` precisa existir desde já porque o `healthcheck` do `docker-compose.yml` (Passo 10) depende dela para saber se o container está saudável. Sem essa rota, o Docker Compose marca o serviço `backend` como `unhealthy` mesmo que a aplicação esteja funcionando normalmente.
 
-**Resultado esperado:** o mesmo teste `curl -I http://localhost:3000` agora mostra vários headers novos de segurança na resposta.
+**Resultado esperado:**
+- `curl -I http://localhost:3000` mostra vários headers novos de segurança na resposta.
+- `curl http://localhost:3000/health` retorna `{"status":"ok"}` com status HTTP `200`.
 
 ---
 
-### ✅ Passo 9 - Criar o `Dockerfile`
+### ✅ Passo 8 - Criar o `Dockerfile`
 
 **Arquivo:** `backend/Dockerfile`
 
 ```dockerfile
 FROM node:20-alpine
 WORKDIR /app
+RUN apk add --no-cache curl
+ENV NODE_ENV=production
 COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+RUN npm ci --omit=dev
+COPY src ./src
 EXPOSE 3000
 USER node
-CMD ["node", "dist/index.js"]
+CMD ["node", "src/index.js"]
 ```
 
 **Por quê, linha a linha:**
 | Linha | Por quê |
 |---|---|
-| `FROM node:20-alpine` | Imagem Node oficial baseada em Alpine Linux - bem mais leve que a imagem padrão, reduz superfície de ataque e tempo de build |
-| `WORKDIR /app` | Define a pasta de trabalho dentro do container |
-| `COPY package*.json ./` + `RUN npm ci` | Copia só os arquivos de dependência primeiro e instala - isso aproveita o cache do Docker: se o código mudar mas as dependências não, o build fica bem mais rápido |
-| `COPY . .` | Copia o resto do código |
-| `RUN npm run build` | Compila o TypeScript para JavaScript (pasta `dist/`) |
-| `EXPOSE 3000` | Documenta que o container escuta na porta 3000 |
-| `USER node` | Troca para um usuário **não-root** dentro do container - se alguém conseguir explorar uma falha na aplicação, o dano fica limitado, sem privilégios de root no container |
-| `CMD [...]` | Comando que roda quando o container inicia: executa o JS já compilado |
+| `FROM node:20-alpine` | Imagem Node oficial baseada em Alpine Linux - bem mais leve que a imagem padrão, reduz superfície de ataque e tempo de build. |
+| `WORKDIR /app` | Define a pasta de trabalho dentro do container. |
+| `RUN apk add --no-cache curl` | A imagem `node:20-alpine` não vem com `curl` instalado por padrão. Sem essa linha, o `healthcheck` do `docker-compose.yml` (Passo 10), que roda `curl -f http://localhost:3000/health` **dentro do container**, falha com `curl: not found` e marca o serviço como `unhealthy` mesmo com a aplicação funcionando. |
+| `COPY package*.json ./` + `RUN npm ci --omit=dev` | Copia só os arquivos de dependência primeiro e instala apenas as dependências de produção - `nodemon`, `jest`, `eslint`, etc. não entram na imagem final. Isso também aproveita o cache do Docker: se o código mudar mas as dependências não, o build fica bem mais rápido. |
+| `COPY src ./src` | Copia apenas o código da aplicação - não copia `tests/`, `.env`, `.git`, etc. (reforçado pelo `.dockerignore` do Passo 9). |
+| `EXPOSE 3000` | Documenta que o container escuta na porta 3000. |
+| `USER node` | Troca para um usuário **não-root** dentro do container - se uma falha na aplicação for explorada, o dano fica limitado, sem privilégios de root no container. |
+| `CMD [...]` | Comando que roda quando o container inicia: executa o código diretamente com `node`, sem etapa de build/compilação. |
 
 **Resultado esperado:** rodando `docker build -t techstore-backend .` dentro de `backend/`, o build termina sem erro.
 
 ---
 
-### ✅ Passo 10 - Criar o `.dockerignore`
+### ✅ Passo 9 - Criar o `.dockerignore`
 
 **Arquivo:** `backend/.dockerignore` - **no mesmo nível do `Dockerfile`, dentro de `backend/`**
 
-> ⚠️ Diferente do que se costuma imaginar, o `.dockerignore` **não** fica na raiz do repositório por padrão - ele fica na raiz do **contexto de build** do Docker. O contexto de build é a pasta que você aponta em `build:` no `docker-compose.yml` (Passo 11), que neste projeto é `./backend`. Por isso o arquivo vai dentro de `backend/`, e não na raiz do repositório.
+> ⚠️ Diferente do que se costuma imaginar, o `.dockerignore` **não** fica na raiz do repositório por padrão - ele fica na raiz do **contexto de build** do Docker. O contexto de build é a pasta apontada em `build:` no `docker-compose.yml` (Passo 10), que neste projeto é `./backend`. Por isso o arquivo vai dentro de `backend/`, e não na raiz do repositório.
 
 **Comando (bash):**
 ```bash
@@ -360,7 +314,6 @@ touch .dockerignore
 ```
 node_modules
 npm-debug.log
-dist
 .git
 .gitignore
 .env
@@ -371,22 +324,23 @@ coverage
 ```
 
 **Por quê:**
-- Quando o Dockerfile roda `COPY . .`, ele copia **tudo** da pasta `backend/` para dentro da imagem - inclusive coisas que não deveriam ir, como `node_modules` (será reinstalado do zero com `npm ci`, então copiar é desperdício), `.git` (histórico do repositório, não serve pra nada em produção) e, mais importante, o `.env` (que pode conter segredos reais - nunca deveria parar dentro de uma imagem Docker, que pode ser compartilhada ou enviada a um registry).
-- Ignorar essas pastas/arquivos deixa o build **mais rápido** (menos dados para copiar) e a **imagem final menor e mais segura**.
+- Mesmo o Dockerfile copiando apenas `src/` explicitamente (Passo 8), o `.dockerignore` continua importante para qualquer comando que use o contexto de build inteiro (ex: `docker build` calculando o hash do contexto) e para evitar que arquivos sensíveis, como o `.env`, cheguem perto da imagem em qualquer cenário.
+- Ignorar `node_modules` e `.git` deixa o envio do contexto de build **mais rápido**, já que o Docker não precisa nem considerar esses arquivos.
 
-**Resultado esperado:** rodando `docker build -t techstore-backend .` novamente, o build fica visivelmente mais rápido (menos arquivos sendo copiados no passo `COPY . .`), e inspecionando a imagem gerada (`docker run --rm -it techstore-backend sh` e depois `ls -la`) você **não** encontra `node_modules` duplicado, `.git` nem `.env` lá dentro.
+**Resultado esperado:** rodando `docker build -t techstore-backend .` novamente, o build fica visivelmente mais rápido, e inspecionando a imagem gerada (`docker run --rm -it techstore-backend sh` e depois `ls -la`) não aparecem `node_modules` duplicado, `.git` nem `.env`.
 
 ---
 
-### ✅ Passo 11 - Criar/atualizar o `docker-compose.yml` na raiz do repositório
+### ✅ Passo 10 - Criar/atualizar o `docker-compose.yml` na raiz do repositório
 
 **Arquivo:** `docker-compose.yml` - **na raiz do repositório, fora da pasta `backend/`**
 
 ```yaml
-version: '3.8'
 services:
   backend:
     build: ./backend
+    env_file:
+      - ./backend/.env
     volumes:
       - ./backend/data:/app/data
     ports:
@@ -408,16 +362,18 @@ services:
 ```
 
 **Por quê:**
-- `build: ./backend` → aponta para a pasta do backend (caminho relativo à raiz, onde este arquivo está). Essa é a pasta que vira o **contexto de build** - e é por isso que o `.dockerignore` do Passo 10 fica dentro dela.
+- `build: ./backend` → aponta para a pasta do backend (caminho relativo à raiz, onde este arquivo está). Essa é a pasta que vira o **contexto de build** - por isso o `.dockerignore` do Passo 9 fica dentro dela.
+- `env_file: ./backend/.env` → garante que todas as variáveis do `.env` local (`JWT_SECRET`, `DB_URL`, etc.) sejam injetadas no container em runtime, e não apenas a variável `NODE_ENV` declarada explicitamente em `environment`.
+- `environment: NODE_ENV=production` continua declarado explicitamente porque sobrescreve/garante esse valor independente do que estiver no `.env` local (que em dev pode ter `NODE_ENV` diferente ou nem ter a chave).
 - `volumes: ./backend/data:/app/data` → garante que os arquivos JSON de persistência (`backend/data/`) sobrevivem mesmo se o container for recriado.
-- `healthcheck` → o Docker passa a monitorar se `/health` responde; se a aplicação travar, o Docker sabe que o container está "não saudável" (pressupõe que existe uma rota `GET /health` no Express - se ainda não existir, crie uma que só responde `200 OK`).
-- O serviço `frontend` está incluído como esqueleto - ajuste o `build`/porta quando o front-end estiver com Dockerfile próprio.
+- `healthcheck` → o Docker passa a monitorar se `/health` responde (rota criada no Passo 7); se a aplicação travar, o Docker sabe que o container está "não saudável".
+- O serviço `frontend` está incluído como esqueleto - ajustar o `build`/porta quando o front-end estiver com Dockerfile próprio.
 
-**Resultado esperado:** o comando `docker compose config` (rodado na raiz) não mostra erro de sintaxe.
+**Resultado esperado:** o comando `docker compose config` (rodado na raiz) não mostra erro de sintaxe, e mostra as variáveis de `backend/.env` já resolvidas dentro do serviço `backend`.
 
 ---
 
-### ✅ Passo 12 - Testar se o ambiente sobe com Docker Compose
+### ✅ Passo 11 - Testar se o ambiente sobe com Docker Compose
 
 **Comando (bash, na raiz do repositório):**
 ```bash
@@ -427,7 +383,8 @@ docker compose up --build
 **O que observar:**
 - O build de `backend` (e `frontend`, se já existir) termina sem erro.
 - O terminal mostra o log do servidor Express subindo (ex: `Servidor rodando na porta 3000`).
-- Abrindo `http://localhost:3000/health` no navegador (ou `curl http://localhost:3000/health`), você recebe uma resposta (não erro de conexão recusada).
+- Abrindo `http://localhost:3000/health` no navegador (ou `curl http://localhost:3000/health`), a resposta é `{"status":"ok"}` (não erro de conexão recusada).
+- Rodando `docker compose ps`, o serviço `backend` aparece como `healthy` depois de alguns segundos.
 
 **Para parar:** `Ctrl + C`, depois `docker compose down` para remover os containers.
 
@@ -435,7 +392,7 @@ docker compose up --build
 
 ---
 
-### ✅ Passo 13 - Criar o `README.md` do backend
+### ✅ Passo 12 - Criar o `README.md` do backend
 
 **Arquivo:** `backend/README.md`
 
@@ -447,7 +404,7 @@ Estrutura mínima recomendada (padrão de mercado):
 API do TechStore: e-commerce com gestão de catálogo, carrinho e pagamento via PIX.
 
 ## Tech Stack
-- Node.js 20 + Express + TypeScript
+- Node.js 20 + Express
 - Persistência: arquivos JSON (MVP) - ver `RN04` no PRD
 - Autenticação: sessão via cookie + JWT
 - Segurança: Helmet, rate limiting, bcrypt
@@ -455,7 +412,7 @@ API do TechStore: e-commerce com gestão de catálogo, carrinho e pagamento via 
 ## Como rodar localmente
 
 \`\`\`bash
-cp .env.example .env   # preencha os valores reais
+cp .env.example .env   # preencher os valores reais
 npm install
 npm run dev
 \`\`\`
@@ -469,8 +426,8 @@ docker compose up --build
 ## Scripts disponíveis
 | Comando | O que faz |
 |---|---|
-| `npm run dev` | Sobe em modo desenvolvimento com reload automático |
-| `npm run build` | Compila TypeScript para `dist/` |
+| `npm run dev` | Sobe em modo desenvolvimento com reload automático (nodemon) |
+| `npm start` | Sobe em modo produção, sem reload automático |
 | `npm test` | Roda a suíte de testes (Jest) |
 | `npm run lint` | Checa padrões de código (ESLint) |
 
@@ -478,13 +435,13 @@ docker compose up --build
 Ver seção 2 do `setup-backend.md`.
 ```
 
-**Por quê:** todo repositório de mercado tem um README que responde, em 30 segundos de leitura, três perguntas: *o que é isso*, *qual stack* e *como eu rodo na minha máquina*. Sem isso, cada pessoa nova no time perde tempo perguntando o óbvio.
+**Por quê:** todo repositório de mercado tem um README que responde, em 30 segundos de leitura, três perguntas: *o que é isso*, *qual stack* e *como rodar na máquina local*. Sem isso, cada pessoa nova no time perde tempo perguntando o óbvio.
 
-**Resultado esperado:** alguém que nunca viu o projeto consegue, só lendo o README, rodar a aplicação localmente sem perguntar nada a ninguém.
+**Resultado esperado:** alguém que nunca viu o projeto consegue, só lendo o README, rodar a aplicação localmente sem precisar perguntar nada a ninguém.
 
 ---
 
-## 5. Padrões de Código (ESLint, Prettier, Husky)
+## 4. Padrões de Código (ESLint, Prettier, Husky)
 
 **Instalação adicional (bash):**
 ```bash
@@ -496,11 +453,11 @@ npx husky install
 ```json
 {
   "scripts": {
-    "dev": "ts-node-dev src/index.ts",
-    "build": "tsc",
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
     "test": "jest",
-    "lint": "eslint 'src/**/*.{js,ts}'",
-    "format": "prettier --write 'src/**/*.{js,ts,json,md}'",
+    "lint": "eslint 'src/**/*.js'",
+    "format": "prettier --write 'src/**/*.{js,json,md}'",
     "prepare": "husky install"
   }
 }
@@ -510,19 +467,21 @@ npx husky install
 
 ---
 
-## 6. Comandos Úteis (resumo)
+## 5. Comandos Úteis (resumo)
 
 | Comando | O que faz |
 |---|---|
-| `npm run dev` | Start em modo desenvolvimento (`ts-node-dev`) |
-| `npm run build` | Build do projeto (compila TS → JS) |
+| `npm run dev` | Start em modo desenvolvimento, com reload automático (`nodemon`) |
+| `npm start` | Start em modo produção |
 | `npm test` | Roda testes automatizados |
 | `npm run lint` | Checa lint do código |
 | `docker compose up --build` | Sobe backend + frontend juntos |
+| `docker compose ps` | Mostra status (incluindo `healthy`/`unhealthy`) dos containers |
+| `docker compose logs -f backend` | Acompanha os logs do backend em tempo real |
 
 ---
 
-## 7. Padrões de Commit e Branch
+## 6. Padrões de Commit e Branch
 
 - Seguir **Conventional Commits** (em português, conforme decisão do time), ex: `feat: adiciona rota de login`, `fix: corrige validação de e-mail`.
 - Pull Requests obrigatórios, aprovados antes de mergear (squash merge).
@@ -531,10 +490,24 @@ npx husky install
 
 ---
 
-## 8. Observabilidade
+## 7. Observabilidade
 
 - Expor métricas básicas em formato Prometheus, quando possível (RNF04 do PRD).
 - Logs da aplicação **nunca** devem conter dados sensíveis (senha, token, dado pessoal do cliente) - nem mesmo em nível de log de debug.
+
+---
+
+## 8. Troubleshooting (Erros Comuns)
+
+| Sintoma | Causa provável | Como resolver |
+|---|---|---|
+| `Error: listen EADDRINUSE :::3000` | Porta 3000 já está em uso por outro processo (ou outro container). | Rodar `lsof -i :3000` (Linux/macOS) para localizar o processo, ou trocar a porta em `.env` (`PORT=`) e no `docker-compose.yml`. |
+| `permission denied` ao rodar comandos `docker` | Usuário do sistema não está no grupo `docker` (comum em Linux). | Rodar com `sudo` como paliativo, ou adicionar o usuário ao grupo `docker` (`sudo usermod -aG docker $USER`) e reiniciar a sessão. |
+| Build do Docker falha em `RUN npm ci` com erro de lockfile | `package-lock.json` desatualizado em relação ao `package.json`, ou lockfile não foi commitado. | Rodar `npm install` localmente para regenerar o lock, commitar o `package-lock.json` e tentar o build novamente. |
+| `docker compose up` sobe, mas `backend` fica `unhealthy` | Rota `/health` não existe, está em outra porta, ou a linha `RUN apk add --no-cache curl` do Passo 8 foi removida/esquecida em uma alteração posterior do Dockerfile. | Confirmar que a rota `/health` do Passo 7 existe e que o Dockerfile instala o `curl`; como alternativa, trocar o teste do healthcheck por um comando Node equivalente. |
+| `Error: Cannot find module 'xyz'` | Dependência usada no código mas não instalada, ou `node_modules` desatualizado em relação ao `package.json`. | Rodar `npm install` para sincronizar as dependências e conferir se o pacote está listado no `package.json`. |
+| `.env` não é lido pela aplicação | `require('dotenv').config()` não está na primeira linha do `src/index.js`, ou o container não recebeu `env_file`. | Confirmar que o `require('dotenv').config()` é a primeira instrução do entrypoint, e confirmar o `env_file` no `docker-compose.yml` (Passo 10). |
+| Mudança em `src/` não aparece com `docker compose up --build` | Cache de camadas do Docker não foi invalidado, ou volume antigo sobrepondo os arquivos. | Rodar `docker compose build --no-cache backend` e depois `docker compose up`. |
 
 ---
 
@@ -542,17 +515,19 @@ npx husky install
 
 - [Node.js](https://nodejs.org/en/docs)
 - [Express.js](https://expressjs.com/)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/)
 - [Docker](https://docs.docker.com/)
 - [Helmet.js](https://helmetjs.github.io/)
+- [express-rate-limit](https://express-rate-limit.mintlify.app/)
+- [nodemon](https://github.com/remy/nodemon)
 - [JWT](https://jwt.io/)
 
 ---
 
 ## 10. Dúvidas e Evoluções
 
-Dúvidas comuns, melhorias deste setup e RFCs de evolução devem ser abertas como Pull Requests na pasta `/rfcs` deste repositório, para discussão pública do time. Atualize este `setup-backend.md` a cada alteração relevante - ele é a fonte de verdade do ambiente, não a memória de quem configurou primeiro.
+Dúvidas comuns, melhorias deste setup e RFCs de evolução devem ser abertas como Pull Requests na pasta `/rfcs` deste repositório, para discussão pública do time. Este `setup-backend.md` deve ser atualizado a cada alteração relevante - é a fonte de verdade do ambiente, não a memória de quem configurou primeiro.
 
 ---
 
-**Resumo:** este documento é a fonte de verdade e o guia de onboarding rápido para configuração, boas práticas e evolução do ambiente de back-end do TechStore. Se você seguiu os 13 passos da Seção 4 na ordem, o ambiente está pronto para começar a implementar as rotas do PRD.
+> [!Note]
+> Seguindo os 12 passos da Seção 3 na ordem, o ambiente está pronto para começar a implementar as rotas do [PRD](./PRD.md).
